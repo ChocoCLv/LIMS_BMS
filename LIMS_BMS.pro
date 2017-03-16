@@ -26,9 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    excelengine.cpp
+    excelengine.cpp \
+    excelparser.cpp \
+    coursetimetable.cpp
 
 HEADERS  += mainwindow.h \
-    excelengine.h
+    excelengine.h \
+    excelparser.h \
+    global.h \
+    coursetimetable.h
 
 FORMS    += mainwindow.ui
