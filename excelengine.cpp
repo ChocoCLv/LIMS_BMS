@@ -68,7 +68,7 @@ ExcelEngine::~ExcelEngine()
   */
 bool ExcelEngine::Open(UINT nSheet, bool visible)
 {
-
+    timer.start();
     if ( bIsOpen )
     {
         //return bIsOpen;
@@ -145,6 +145,7 @@ bool ExcelEngine::Open(UINT nSheet, bool visible)
     nColumnCount = columns->property("Count").toInt();    //获取列数
 
     bIsOpen  = true;
+    qDebug()<<"open cost:"<<timer.elapsed();
     return bIsOpen;
 }
 
@@ -153,6 +154,7 @@ bool ExcelEngine::Open(UINT nSheet, bool visible)
   */
 bool ExcelEngine::Open(QString xlsFile, UINT nSheet, bool visible)
 {
+
     sXlsFile = xlsFile;
     nCurrSheet = nSheet;
     bIsVisible = visible;
@@ -179,7 +181,7 @@ void ExcelEngine::Save()
         else /*如果该文档是新建出来的，则使用另存为COM接口*/
         {
             pWorkbook->dynamicCall("SaveAs (const QString&,int,const QString&,const QString&,bool,bool)",
-                      sXlsFile,56,QString(""),QString(""),false,false);
+                                   sXlsFile,56,QString(""),QString(""),false,false);
 
         }
 
@@ -281,7 +283,9 @@ bool ExcelEngine::ReadDataToTable(QTableWidget *tableWidget)
     int rowcnt    = nStartRow + nRowCount;
     int columncnt = nStartColumn + nColumnCount;
 
+    res = readAll();
     //获取excel中的第一行数据作为表头
+
     QStringList headerList;
     for (int n = nStartColumn; n<columncnt; n++ )
     {
@@ -290,6 +294,7 @@ bool ExcelEngine::ReadDataToTable(QTableWidget *tableWidget)
         {
             headerList<<cell->dynamicCall("Value2()").toString();
         }
+        delete cell;
     }
 
     //重新创建表头
@@ -316,6 +321,42 @@ bool ExcelEngine::ReadDataToTable(QTableWidget *tableWidget)
 
     return true;
 }
+
+QList<QList<QVariant> > ExcelEngine::readAll()
+{
+    timer.restart();
+    //读取所有内容 保存在QVariant中
+    QVariant var;
+    QList<QList<QVariant> > r;
+    if (this->pWorksheet != NULL && ! this->pWorksheet->isNull())
+    {
+        QAxObject *usedRange = this->pWorksheet->querySubObject("UsedRange");
+        if(NULL == usedRange || usedRange->isNull())
+        {
+            return r;
+        }
+        var = usedRange->dynamicCall("Value");
+        delete usedRange;
+    }
+
+    //将var转换为QList<QList<QVariant> >
+    //其中QList<QList<QVariant> >中QList<QVariant>为每行的内容，行按顺序放入最外围的QList中。
+    QVariantList varRows = var.toList();
+    if(varRows.isEmpty())
+    {
+        return r;
+    }
+    const int rowCount = varRows.size();
+    QVariantList rowData;
+    for(int i=0;i<rowCount;++i)
+    {
+        rowData = varRows[i].toList();
+        r.push_back(rowData);
+    }
+    qDebug()<<"read cost"<<timer.elapsed();
+    return r;
+}
+
 
 /**
   *@brief 获取指定单元格的数据
@@ -410,3 +451,4 @@ UINT ExcelEngine::GetColumnCount()const
 {
     return nColumnCount;
 }
+

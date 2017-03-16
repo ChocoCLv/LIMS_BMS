@@ -6,6 +6,8 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
+#include <QVariantList>
+#include <QList>
 #include <QAxBase>
 #include <QAxObject>
 
@@ -13,6 +15,8 @@
 #include <QTableView>
 #include <QTableWidgetItem>
 #include <QDebug>
+
+#include <QElapsedTimer>
 
 typedef unsigned int UINT;
 
@@ -40,6 +44,7 @@ public:
 
     bool SaveDataFrTable(QTableWidget *tableWidget); //保存数据到xls
     bool ReadDataToTable(QTableWidget *tableWidget); //从xls读取数据到ui
+    QList<QList<QVariant> > readAll();       //一次性读取表格内容，避免循环读取耗时
 
     QVariant GetCellData(UINT row, UINT column);                //获取指定单元数据
     bool     SetCellData(UINT row, UINT column, QVariant data); //修改指定单元数据
@@ -49,6 +54,8 @@ public:
 
     bool IsOpen();
     bool IsValid();
+
+
 
 protected:
     void Clear();
@@ -71,6 +78,10 @@ private:
     bool      bIsValid;     //是否有效
     bool      bIsANewFile;  //是否是一个新建xls文件，用来区分打开的excel是已存在文件还是有本类新建的
     bool      bIsSaveAlready;//防止重复保存
+    QList<QList<QVariant> > res;
+
+    QElapsedTimer timer;
+
 
 };
 
