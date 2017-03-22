@@ -39,7 +39,7 @@ public:
 public:
     bool Open(UINT nSheet = 1, bool visible = false);//打开xls文件
     bool Open(QString xlsFile, UINT nSheet = 1, bool visible = false);
-    void Save();                //保存xls报表
+
     void Close();               //关闭xls报表
 
     bool SaveDataFrTable(QTableWidget *tableWidget); //保存数据到xls
@@ -53,6 +53,8 @@ public:
 
     bool IsOpen();
     bool IsValid();
+
+    QList<QList<QVariant> > GetExcelData();
 
 
 

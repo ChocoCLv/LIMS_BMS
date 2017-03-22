@@ -6,9 +6,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    dataTypeRadioButtonGrp = new QButtonGroup(this);
+    dataTypeRadioButtonGrp->addButton(ui->courseTimeTableRB,COURSE_TIME_TABLE);
+    dataTypeRadioButtonGrp->addButton(ui->radioButton_2,1);
+    dataTypeRadioButtonGrp->addButton(ui->radioButton_3,2);
+
     connect(ui->fileSelectBtn,SIGNAL(clicked()),this,SLOT(getFileName()));
     connect(ui->openBtn,SIGNAL(clicked(bool)),this,SLOT(openFile()));
     connect(ui->openAction,SIGNAL(triggered(bool)),this,SLOT(openFile()));
+
+    connect(ui->courseTimeTableRB,SIGNAL(clicked(bool)),this,SLOT(setDataType()));
+    connect(ui->radioButton_2,SIGNAL(clicked(bool)),this,SLOT(setDataType()));
+    connect(ui->radioButton_3,SIGNAL(clicked(bool)),this,SLOT(setDataType()));
 }
 
 void MainWindow::getFileName()
@@ -19,9 +28,25 @@ void MainWindow::getFileName()
 
 void MainWindow::openFile()
 {
-    excel = new ExcelEngine(fileName);
-    excel->Open();
-    excel->ReadDataToTable(ui->tableWidget);
+    excelEngine = new ExcelEngine(fileName);
+    excelEngine->Open();
+    excelEngine->ReadDataToTable(ui->tableWidget);
+    ui->optionGrp->setEnabled(true);
+}
+
+void MainWindow::setDataType()
+{
+    switch(dataTypeRadioButtonGrp->checkedId())
+    {
+    case COURSE_TIME_TABLE:
+        excelParser = new ExcelParser(this);
+        excelParser->SetDataType(COURSE_TIME_TABLE);
+        excelParser->SetExcelData(excelEngine->GetExcelData());
+        excelParser->ParseData();
+        break;
+    default:
+        break;
+    }
 }
 
 MainWindow::~MainWindow()

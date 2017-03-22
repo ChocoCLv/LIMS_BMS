@@ -4,8 +4,11 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QDir>
+#include <QButtonGroup>
 
 #include "excelengine.h"
+#include "excelparser.h"
+#include "global.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,12 +24,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    ExcelEngine *excel;
+    ExcelEngine *excelEngine;
+    ExcelParser *excelParser;
     QString fileName;
+    QButtonGroup *dataTypeRadioButtonGrp;
 
 public slots:
     void getFileName();
     void openFile();
+    void setDataType();
 };
 
 #endif // MAINWINDOW_H
