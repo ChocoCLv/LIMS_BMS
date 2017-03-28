@@ -5,32 +5,22 @@ ExcelParser::ExcelParser(QObject *parent) : QObject(parent)
 
 }
 
-
-void ExcelParser::SetExcelData(QList<QList<QVariant> > eData)
+void ExcelParser::ImportCourseTimerTable(QList<QList<QVariant> > data)
 {
-    excelData = eData;
-}
-
-void ExcelParser::SetDataType(ImportDataType type)
-{
-    dataType = type;
-}
-
-void ExcelParser::ParseData()
-{
-    switch(dataType)
-    {
-    case COURSE_TIME_TABLE:
-        ImportCourseTimerTable();
-        break;
-    default:
-        break;
+    excelData = data;
+    dataType = COURSE_TIME_TABLE;
+    QList<QVariant> row;
+    QVariant cell;
+    foreach (row, data) {
+        foreach (cell, row) {
+           QString courses = cell.toString();
+           if(courses.contains("◇")){
+                QStringList courseList = courses.split("\n");
+                QString course;
+                foreach (course, courseList) {
+                   qDebug()<<course<<endl;
+                }
+           }
+        }
     }
-}
-
-void ExcelParser::ImportCourseTimerTable()
-{
-    CourseTimeTable *couseTimeTable = new CourseTimeTable();
-    int startColumn =
-
 }

@@ -40,9 +40,7 @@ void MainWindow::setDataType()
     {
     case COURSE_TIME_TABLE:
         excelParser = new ExcelParser(this);
-        excelParser->SetDataType(COURSE_TIME_TABLE);
-        excelParser->SetExcelData(excelEngine->GetExcelData());
-        excelParser->ParseData();
+        excelParser->ImportCourseTimerTable(excelEngine->GetExcelData());
         break;
     default:
         break;

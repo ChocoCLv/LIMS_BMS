@@ -27,14 +27,14 @@ private:
     QString teacherName;            //课程老师名字
     int startWeek;
     int endWeek;
-    QList<classHour> classHours;    //课程的课时信息
+    //QList<classHour> classHours;    //课程的课时信息
     //QList<int> classIDs;          //上课的班级ID
 
 public:
     void setId(int _id){id = _id;}
     void setName(QString _name){name = _name;}
     void setTeacher(QString _teacherName){_teacherName = teacherName;}
-    void addClassHour(ClassHour ch){classHours.push_back(ch);}
+    //void addClassHour(ClassHour ch){classHours.push_back(ch);}
     void setStartWeek(int _startWeek){startWeek = _startWeek;}
     void setEndWeek(int _endWeek){endWeek = _endWeek;}
 };
